@@ -1,0 +1,6 @@
+c:\users\igor\documents\visual studio 2012\Projects\BLab_2\BLab_2\bin\Debug\BLab_2.exe.config
+C:\Users\Igor\Documents\Visual Studio 2012\Projects\BLab_2\BLab_2\bin\Debug\BLab_2.exe
+C:\Users\Igor\Documents\Visual Studio 2012\Projects\BLab_2\BLab_2\bin\Debug\BLab_2.pdb
+C:\Users\Igor\Documents\Visual Studio 2012\Projects\BLab_2\BLab_2\obj\Debug\BLab_2.csprojResolveAssemblyReference.cache
+C:\Users\Igor\Documents\Visual Studio 2012\Projects\BLab_2\BLab_2\obj\Debug\BLab_2.exe
+C:\Users\Igor\Documents\Visual Studio 2012\Projects\BLab_2\BLab_2\obj\Debug\BLab_2.pdb
