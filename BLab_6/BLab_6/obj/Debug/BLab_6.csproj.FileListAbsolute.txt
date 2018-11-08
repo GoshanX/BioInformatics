@@ -1,0 +1,5 @@
+c:\users\igor\documents\visual studio 2012\Projects\BLab_6\BLab_6\bin\Debug\BLab_6.exe.config
+c:\users\igor\documents\visual studio 2012\Projects\BLab_6\BLab_6\bin\Debug\BLab_6.exe
+c:\users\igor\documents\visual studio 2012\Projects\BLab_6\BLab_6\bin\Debug\BLab_6.pdb
+c:\users\igor\documents\visual studio 2012\Projects\BLab_6\BLab_6\obj\Debug\BLab_6.exe
+c:\users\igor\documents\visual studio 2012\Projects\BLab_6\BLab_6\obj\Debug\BLab_6.pdb

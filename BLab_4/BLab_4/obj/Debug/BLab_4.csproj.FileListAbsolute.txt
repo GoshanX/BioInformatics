@@ -1,0 +1,6 @@
+c:\users\igor\documents\visual studio 2012\Projects\BLab_4\BLab_4\bin\Debug\BLab_4.exe.config
+c:\users\igor\documents\visual studio 2012\Projects\BLab_4\BLab_4\bin\Debug\BLab_4.exe
+c:\users\igor\documents\visual studio 2012\Projects\BLab_4\BLab_4\bin\Debug\BLab_4.pdb
+c:\users\igor\documents\visual studio 2012\Projects\BLab_4\BLab_4\obj\Debug\BLab_4.csprojResolveAssemblyReference.cache
+c:\users\igor\documents\visual studio 2012\Projects\BLab_4\BLab_4\obj\Debug\BLab_4.exe
+c:\users\igor\documents\visual studio 2012\Projects\BLab_4\BLab_4\obj\Debug\BLab_4.pdb
