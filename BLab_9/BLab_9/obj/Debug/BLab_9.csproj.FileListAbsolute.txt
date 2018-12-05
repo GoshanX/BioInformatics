@@ -1,0 +1,7 @@
+C:\Users\Igor\source\repos\BLab_9\BLab_9\bin\Debug\BLab_9.exe.config
+C:\Users\Igor\source\repos\BLab_9\BLab_9\bin\Debug\BLab_9.exe
+C:\Users\Igor\source\repos\BLab_9\BLab_9\bin\Debug\BLab_9.pdb
+C:\Users\Igor\source\repos\BLab_9\BLab_9\obj\Debug\BLab_9.csprojAssemblyReference.cache
+C:\Users\Igor\source\repos\BLab_9\BLab_9\obj\Debug\BLab_9.csproj.CoreCompileInputs.cache
+C:\Users\Igor\source\repos\BLab_9\BLab_9\obj\Debug\BLab_9.exe
+C:\Users\Igor\source\repos\BLab_9\BLab_9\obj\Debug\BLab_9.pdb
