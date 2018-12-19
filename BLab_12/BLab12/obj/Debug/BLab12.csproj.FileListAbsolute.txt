@@ -1,0 +1,7 @@
+C:\Users\Igor\source\repos\BLab12\BLab12\bin\Debug\BLab12.exe.config
+C:\Users\Igor\source\repos\BLab12\BLab12\bin\Debug\BLab12.exe
+C:\Users\Igor\source\repos\BLab12\BLab12\bin\Debug\BLab12.pdb
+C:\Users\Igor\source\repos\BLab12\BLab12\obj\Debug\BLab12.csprojAssemblyReference.cache
+C:\Users\Igor\source\repos\BLab12\BLab12\obj\Debug\BLab12.csproj.CoreCompileInputs.cache
+C:\Users\Igor\source\repos\BLab12\BLab12\obj\Debug\BLab12.exe
+C:\Users\Igor\source\repos\BLab12\BLab12\obj\Debug\BLab12.pdb
