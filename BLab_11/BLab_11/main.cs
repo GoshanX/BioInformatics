@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 
 
-    class Bio_try
-    {
+class Program
+{
     static Dictionary<char, int> aminoacidMassTable = new Dictionary<char, int>()
         {
                                         {'G', 57},
@@ -32,6 +31,7 @@ using System.Threading.Tasks;
                                         {'W', 186}
         };
 
+
     public static int getMass(string pattern)
     {
         int key;
@@ -45,22 +45,25 @@ using System.Threading.Tasks;
 
         return mass;
     }
-    static List<string> Expand(List<string> peptides)
+    static List<string> Expand(List<string> peptide)
+    {
+        List<string> expandPeptides = new List<string>();
+        for (int i = 0; i < peptide.Count; i++)
         {
-            List<string> newPeptides = new List<string>();
-
-            foreach (var peptide in peptides)
+            for (int j = 0; j < aminoacidMassTable.Count; j++)
             {
-                foreach (var p in aminoacidMassTable.Keys)
-                {
-                    newPeptides.Add(peptide + p);
-                }
+                expandPeptides.Add(peptide[i] + aminoacidMassTable.ElementAt(j).Key);
             }
-            return newPeptides;
         }
+        return expandPeptides;
+    }
+
+
     static string LinearSpectrum(string peptide)
     {
         if (peptide.Length == 1) return aminoacidMassTable[peptide[0]].ToString();
+
+        List<int> resmas = new List<int>() { 0 };
 
         StringBuilder buf = new StringBuilder(peptide);
 
@@ -68,25 +71,27 @@ using System.Threading.Tasks;
         {
             buf.Append(peptide[i]);
         }
-
-        List<int> masses = new List<int>();
-        masses.Add(0);
+        for (int i = 0; i < peptide.Length; i++)
+        {
+            resmas.Add(aminoacidMassTable[peptide[i]]);
+        }
+        resmas.Add(getMass(peptide));
 
         string cyclePeptide = peptide + peptide;
 
-        for (int i = 1; i < peptide.Length; i++)
+        for (int i = 2; i < peptide.Length; i++)
         {
-            for (int j = 0; j < peptide.Length; j++)
+            for (int j = 0; j < peptide.Length - i; j++)
             {
-                masses.Add(getMass(buf.ToString().Substring(j, i)));
+
+                resmas.Add(getMass(buf.ToString().Substring(j, i)));
+
             }
         }
 
-        masses.Add(getMass(peptide));
+        resmas.Sort();
 
-        masses.Sort();
-
-        return string.Join(" ", masses);
+        return string.Join(" ", resmas);
     }
 
     static int Score(string peptide, string spectrum)
@@ -95,39 +100,43 @@ using System.Threading.Tasks;
         List<string> spmas = spectrum.Split(' ').ToList();
 
         int score = 0;
-        foreach (var mass in pmas)
+        for(int i=0;i<pmas.Count;i++)
         {
-            if (spmas.Contains(mass))
+            if (spmas.Contains(pmas[i]))
             {
-                spmas.Remove(mass);
+                spmas.Remove(pmas[i]); //Для подсчёта повторных масс
                 score++;
             }
         }
-
         return score;
+      
     }
-    static List<string> Trim(List<string> lboard, string spectrum, int n)
+    static List<string> Trim(List<string> lboard, string spec, int n)
         {
-            lboard.Sort((a, b) => Score(b, spectrum).CompareTo(Score(a, spectrum)));
-            if (lboard.Count > n)
+            lboard.Sort((p, q) => Score(q, spec).CompareTo(Score(p, spec)));
+
+            if (lboard.Count >= n+1)
             {
                 int last = n;
-                for (int i = n; i < lboard.Count; i++)
+                 for (int i = n; i < lboard.Count; i++)
                 {
-                    if (Score(lboard[n - 1], spectrum) == Score(lboard[i], spectrum))
-                    {
-                        last = i;
-                    }
-                    else break;
-                }
 
-                lboard = lboard.Take(last + 1).ToList();
+                    if (Score(lboard[n - 1], spec) == Score(lboard[i], spec))
+                    {
+                              last = i;
+                    }
+
+                else break;
+                }
+            int size = last + 1;
+
+                lboard = lboard.Take(size).ToList();
             }
 
             return lboard;
         }
 
-        static void Main(string[] args)
+        static void Main()
         {
         Console.SetIn(new StreamReader(Console.OpenStandardInput(),
                          Console.InputEncoding,
@@ -136,7 +145,7 @@ using System.Threading.Tasks;
 
         int n = int.Parse(Console.ReadLine());
             string spectrum = Console.ReadLine();
-            int parentMass = int.Parse(spectrum.Split(' ').Last());
+            int parentmas = int.Parse(spectrum.Split(' ').Last());
 
             List<string> lboard = new List<string>() { "" };
             string lPeptide = "";
@@ -145,31 +154,39 @@ using System.Threading.Tasks;
             {
                 lboard = Expand(lboard);
                 List<string> constPeptides = new List<string>(lboard);
-                foreach (var peptide in constPeptides)
+
+            for (int i = 0; i < constPeptides.Count; i++)
+            {
+                if (getMass(constPeptides[i]) == parentmas)
                 {
-                    if (getMass(peptide) == parentMass)
-                    {
-                        if (Score(peptide, spectrum) > Score(lPeptide, spectrum))
+                   
+                        if (Score(constPeptides[i], spectrum) > Score(lPeptide, spectrum))
                         {
-                            lPeptide = peptide;
+                            lPeptide = constPeptides[i];
                         }
                     }
-                    else if (getMass(peptide) > parentMass)
+                    else if (getMass(constPeptides[i]) > parentmas)
                     {
-                        lboard.Remove(peptide);
+                        lboard.Remove(constPeptides[i]);
                     }
                 }
 
                 lboard = Trim(lboard, spectrum, n);
             }
 
-            List<string> outMasses = new List<string>();
-            foreach (var s in lPeptide)
-            {
-                outMasses.Add(aminoacidMassTable[s].ToString());
-            }
+            List<string> resmas = new List<string>();
 
-            Console.WriteLine(string.Join("-", outMasses));
+        for(int i = 0; i < lPeptide.Length; i++)
+        {
+            resmas.Add(aminoacidMassTable[lPeptide[i]].ToString());
+        }
+            for(int i = 0; i < resmas.Count-1; i++)
+        {
+            Console.Write(resmas[i]+"-");
+        }
+        Console.WriteLine(resmas[resmas.Count-1]);
+
+            
             Console.ReadLine();
         }
     }

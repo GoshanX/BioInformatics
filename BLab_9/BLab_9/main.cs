@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-    class Blab_try
-    {
-        static Dictionary<char, int> aminoacidMassTable = new Dictionary<char, int>()
+class Program
+{
+    static Dictionary<char, int> aminoacidMassTable = new Dictionary<char, int>()
         {
                                         {'G', 57},
                                         {'A', 71},
@@ -31,6 +31,7 @@ using System.Threading.Tasks;
                                         {'W', 186}
         };
 
+
     public static int getMass(string pattern)
     {
         int key;
@@ -44,52 +45,24 @@ using System.Threading.Tasks;
 
         return mass;
     }
-    static List<string> Expand(List<string> peptides)
+    static List<string> Expand(List<string> peptide)
+    {
+        List<string> expandPeptides = new List<string>();
+        for (int i = 0; i < peptide.Count; i++)
         {
-            List<string> newPeptides = new List<string>();
-
-            foreach (var peptide in peptides)
+            for (int j = 0; j < aminoacidMassTable.Count; j++)
             {
-                foreach (var p in aminoacidMassTable.Keys)
-                {
-                    newPeptides.Add(peptide + p);
-                }
+                expandPeptides.Add(peptide[i] + aminoacidMassTable.ElementAt(j).Key);
             }
-            return newPeptides;
         }
-    
+        return expandPeptides;
+    }
+
     static string CycloSpectrum(string peptide)
     {
-        
-        StringBuilder buf = new StringBuilder(peptide);
+        if (peptide.Length == 1) return aminoacidMassTable[peptide[0]].ToString();
 
-        for (int i = 0; i < peptide.Length; i++)
-        {
-            buf.Append(peptide[i]);
-        }
-
-        List<int> masses = new List<int>();
-        masses.Add(0);
-        
-        string cyclePeptide = peptide + peptide;
-
-        for (int i = 1; i < peptide.Length; i++)
-        {
-            for (int j = 0; j < peptide.Length; j++)
-            {
-                masses.Add(getMass(buf.ToString().Substring(j, i)));
-            }
-        }
-
-        masses.Add(getMass(peptide));
-
-        masses.Sort();
-
-        return string.Join(" ", masses);
-    }
-        static string LinearSpectrum(string peptide)
-        {
-            if (peptide.Length == 1) return aminoacidMassTable[peptide[0]].ToString();
+        List<int> resmas = new List<int>() { 0 };
 
         StringBuilder buf = new StringBuilder(peptide);
 
@@ -97,86 +70,115 @@ using System.Threading.Tasks;
         {
             buf.Append(peptide[i]);
         }
+        for (int i = 0; i < peptide.Length; i++)
+        {
+            resmas.Add(aminoacidMassTable[peptide[i]]);
+        }
+        resmas.Add(getMass(peptide));
 
-        List<int> masses = new List<int>();
-        masses.Add(0);
 
         string cyclePeptide = peptide + peptide;
 
-        for (int i = 1; i < peptide.Length; i++)
+        for (int i = 2; i < peptide.Length; i++)
         {
             for (int j = 0; j < peptide.Length; j++)
             {
-                masses.Add(getMass(buf.ToString().Substring(j, i)));
+                resmas.Add(getMass(buf.ToString().Substring(j, i)));
             }
         }
 
-        masses.Add(getMass(peptide));
+        resmas.Sort();
 
-        masses.Sort();
-
-        return string.Join(" ", masses);
+        return string.Join(" ", resmas);
     }
 
-        static bool IsConsistent(string peptide, string spectrum)
-        {
-            List<string> specMass = spectrum.Split(' ').ToList();
-            List<string> peptideMass = LinearSpectrum(peptide).Split(' ').ToList();
+    static string LinearSpectrum(string peptide)
+    {
+        if (peptide.Length == 1) return aminoacidMassTable[peptide[0]].ToString();
 
-            foreach (var m in peptideMass)
+        List<int> resmas = new List<int>() { 0 };
+
+        StringBuilder buf = new StringBuilder(peptide);
+
+        for (int i = 0; i < peptide.Length; i++)
+        {
+            buf.Append(peptide[i]);
+        }
+        for (int i = 0; i < peptide.Length; i++)
+        {
+            resmas.Add(aminoacidMassTable[peptide[i]]);
+        }
+        resmas.Add(getMass(peptide));
+
+        string cyclePeptide = peptide + peptide;
+
+        for (int i = 2; i < peptide.Length; i++)
+        {
+            for (int j = 0; j < peptide.Length - i; j++)
             {
-                if (!specMass.Contains(m))
-                {
-                    return false;
-                }
+
+                resmas.Add(getMass(buf.ToString().Substring(j, i)));
 
             }
-
-            return true;
         }
 
-        static void Main(string[] args)
-        {
-            string spectrum = Console.ReadLine();
-            int parentMass = int.Parse(spectrum.Split(' ').Last());
+        resmas.Sort();
 
-            List<string> peptides = new List<string>() { "" };
-            List<string> outputPeptides = new List<string>();
-
-            while (peptides.Count > 0)
-            {
-                peptides = Expand(peptides);
-                List<string> immutablePeptides = new List<string>(peptides);
-                foreach (var peptide in immutablePeptides)
-                {
-                    if (getMass(peptide) == parentMass)
-                    {
-                        if (CycloSpectrum(peptide) == spectrum)
-                        {
-                            outputPeptides.Add(peptide);
-                        }
-                        peptides.Remove(peptide);
-                    }
-                    else if (!IsConsistent(peptide, spectrum))
-                    {
-                        peptides.Remove(peptide);
-                    }
-                }
-            }
-
-            List<string> outputMasses = new List<string>();
-            foreach (var p in outputPeptides)
-            {
-                List<string> m = new List<string>();
-                foreach (var s in p)
-                {
-                    m.Add(aminoacidMassTable[s].ToString());
-                }
-
-                outputMasses.Add(string.Join("-", m));
-            }
-
-            Console.WriteLine(string.Join(" ", outputMasses.Distinct()));
-            Console.ReadKey();
-        }
+        return string.Join(" ", resmas);
     }
+
+    static bool IsAgree(string peptide, string spectrum)
+    {
+        List<string> specmas = spectrum.Split(' ').ToList();
+        List<string> peptidemas = LinearSpectrum(peptide).Split(' ').ToList();
+        for (int i = 0; i < peptidemas.Count; i++)
+        {
+            if (!specmas.Contains(peptidemas[i])) return false;
+        }
+        return true;
+    }
+    static void Main(string[] args)
+    {
+        string spectrum = Console.ReadLine();
+        int parentmas = int.Parse(spectrum.Split(' ').Last());
+
+        List<string> peptides = new List<string>() { "" };
+        List<string> respeptides = new List<string>();
+
+        while (peptides.Count != 0)
+        {
+            peptides = Expand(peptides);
+            List<string> constPeptides = new List<string>(peptides);
+            for (int i = 0; i < constPeptides.Count; i++)
+            {
+                if (getMass(constPeptides[i]) == parentmas)
+                {
+                    if (CycloSpectrum(constPeptides[i]) == spectrum)
+                    {
+                        respeptides.Add(constPeptides[i]);
+                    }
+                    peptides.Remove(constPeptides[i]);
+                }
+                else if (!IsAgree(constPeptides[i], spectrum))
+                {
+                    peptides.Remove(constPeptides[i]);
+                }
+            }
+        }
+        List<string> resmas = new List<string>();
+        for (int i = 0; i < respeptides.Count; i++)
+        {
+            List<string> tmp = new List<string>();
+            for (int j = 0; j < respeptides[i].Length; j++)
+            {
+                tmp.Add(aminoacidMassTable[respeptides[i][j]].ToString());
+            }
+            resmas.Add(string.Join("-", tmp));
+        }
+
+
+
+        Console.WriteLine(string.Join(" ", resmas.Distinct()));
+        Console.ReadKey();
+    }
+}
